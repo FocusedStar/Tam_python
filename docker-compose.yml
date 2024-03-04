@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:latest
+    volumes:
+      - postdb:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST_AUTH_METHOD: md5
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  backend:
+    image: backend:latest
+    build: ./backend
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "${FAST_RUN_PORT}:8000"
+
+    volumes:
+      - ./backend:/app
+  tamweb:
+    image: tamweb:latest
+    build: ./tamweb
+    #command: [" ng serve --host 0.0.0.0"]
+    #command: ["npm install -g @angular/cli", "tail -f /dev/null" ]
+    command: tail -f /dev/null
+    volumes:
+      - ./tamweb:/app/
+    ports:
+      - 4200:4200
+    depends_on:
+      - backend
+
+
+networks:
+  backend:
+    driver: bridge
+volumes:
+  postdb:
