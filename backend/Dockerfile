@@ -7,9 +7,9 @@ COPY requirements.txt /app/
 RUN pip install -r requirements.txt
 
 COPY app.py /app/
+COPY alembic.ini /app/
+COPY migrations /app/
 
 EXPOSE 8000
  
- 
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--reload"\
-,";alembic","upgrade","head"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--reload"]

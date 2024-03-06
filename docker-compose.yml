@@ -28,18 +28,7 @@ services:
 
     volumes:
       - ./backend:/app
-  tamweb:
-    image: tamweb:latest
-    build: ./tamweb
-    #command: [" ng serve --host 0.0.0.0"]
-    #command: ["npm install -g @angular/cli", "tail -f /dev/null" ]
-    command: tail -f /dev/null
-    volumes:
-      - ./tamweb:/app/
-    ports:
-      - 4200:4200
-    depends_on:
-      - backend
+
 
 
 networks:
