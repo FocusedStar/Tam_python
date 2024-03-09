@@ -1,14 +1,16 @@
-from fastapi import FastAPI
-from database.database import engine
-from database.database import Base
-from routes.router import router
+from fastapi import FastAPI, Depends
+from database.database import engine,Base
+from routes import user_router,login_router
+from authentication.jwt_bearer import jwtBearer
+
 app = FastAPI()
 
 Base.metadata.create_all(bind = engine)
 
  
-@app.get("/")
+@app.get("/",dependencies=[Depends(jwtBearer)])
 async def root():
     return {"message": "Hellooo !!!!"}
 
-app.include_router(router,prefix="/users", tags=["user"])
+app.include_router(user_router.router,prefix="/users", dependencies=[Depends(jwtBearer())], tags=["user"])
+app.include_router(login_router.router,prefix="/users", dependencies=[Depends(jwtBearer())], tags=["user"])

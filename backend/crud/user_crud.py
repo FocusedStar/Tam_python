@@ -11,7 +11,7 @@ def get_user_by_id(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
 def create_user(db:Session, input_user:User_schema):
-    _user = User(name = input_user.name,job = input_user.job, email = input_user.email)
+    _user = User(name = input_user.name, email = input_user.email, password = input_user.password)
     try:
         db.add(_user)
         db.commit()
@@ -36,3 +36,10 @@ def update_user(db:Session, user_id:int,input_user_name:str):
     db.commit()
     db.refresh(_user)
     return _user
+
+def check_user(db:Session, user_email:str, user_password:str):
+    _user = db.query(User).filter(User.email == user_email).filter(User.password == user_password).first()
+    if not _user:
+        raise HTTPException(status_code=401, detail="Invalid Credentials")
+
+    return True
