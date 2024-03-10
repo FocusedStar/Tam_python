@@ -7,13 +7,15 @@ class User_schema(BaseModel):
     name: Optional[str]=None
     email: EmailStr = Field(default=None)
     password: str = Field(default=None)
+    permissions: List[str]=None
     class Config:
         from_attributes = True
         the_schema = {
             'user_demo': {
                 "name": "Saif",
                 "email": "Saif@example.com",
-                "password": "123"
+                "password": "123",
+                "permissions":["0"]
             }
         }
 
